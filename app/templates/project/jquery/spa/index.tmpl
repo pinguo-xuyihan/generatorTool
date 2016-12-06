@@ -1,0 +1,22 @@
+<!-- baidu template -->
+<!-- http://baidufe.github.io/BaiduTemplate -->
+
+<div class="index-page-logs">
+
+	<header><%-data.title%></header>
+
+	<p style="color: #ca9f9f">该构建工具基于fis3，其支持以下功能</p>
+	<ul class="logs">
+		<%for (var i = 0; i < data.list.length; i++) {%>
+	       <li><%-data.list[i]%></li>
+	    <%}%>
+	</ul>
+
+	<p>目前你选择的项目适合构建小型单页项目，</p>
+	<p>可直接执行node createPage [yourPgae]来创建你的页面，通过 /index#[yourPage]来访问，相应的页面文件在page/[youPage]下</p> 
+	<p>其他注意点：组件请放在widget下(会自动帮你进行模块化),如果你有通用的js文件请放在common/js下，</p>
+	<p>如果是通用的库文件，请放在common/lib下(这两个目录下没有进行自动模块化，所以你有立即执行的文件也行放在这两个文件下),</p>
+	<p>图片，字体等资源请放在resource下</p>
+	<footer>good luck~</footer>
+
+</div>
