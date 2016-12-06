@@ -181,6 +181,39 @@ fis.hook('commonjs', {
 });
 <%}%>
 
+<%if(includeReactJS){%>
+fis.match('node_modules/react/dist/react.min.js', {
+    useHash: true,
+    isMod: true
+});
+
+fis.match('node_modules/react-router/umd/ReactRouter.min.js', {
+    useHash: true,
+    isMod: true
+});
+
+fis.hook('commonjs', {
+    paths: {
+        react:       'node_modules/react/dist/react.min.js',
+        reactRouter: 'node_modules/react-router/umd/ReactRouter.min.js'
+    }
+});
+<%}%>
+
+<%if(includeReflux){%>
+
+fis.match("/node_modules/reflux/dist/reflux.min.js", {
+    useHash: true,
+    isMod: true
+});
+
+fis.hook('commonjs', {
+    paths: {
+        reflux: '"/node_modules/reflux/dist/reflux.min.js"',
+    }
+});
+<%}%>
+
 
 
 fis.config.set('project.watch.usePolling', true);

@@ -64,7 +64,7 @@ if (appExist) {
       this.allowUpdate = false;
       this.includeSeajs = false;
       this.includeBrowserify = false;
-      this.includeReactJS = false;
+      this.includeReactJSAndReflux = false;
       this.supportECMA6 = false;
       //this.supportKits = false;
       if(fs.existsSync(process.env.PWD+"/node_modules/browserify")) this.includeBrowserify = true;
@@ -90,8 +90,8 @@ if (appExist) {
           checked:this.includeBrowserify
         },{
           name:'React and Reflux',
-          value:'includeReactJS',
-          checked:this.includeReactJS
+          value:'includeReactJSAndReflux',
+          checked:this.includeReactJSAndReflux
         },{
           name:'Support ECMAScript 6',
           value:'supportECMA6',
@@ -113,7 +113,7 @@ if (appExist) {
 
         this.allowUpdate       = hasFeature('allowUpdate');
         this.includeBrowserify = hasFeature('includeBrowserify');
-        this.includeReactJS    = hasFeature('includeReactJS');
+        this.Reflux            = hasFeature('includeReactJSAndReflux');
         this.supportECMA6      = hasFeature('supportECMA6');
         this.exitProcess       = hasFeature('exitProcess');
 
@@ -121,7 +121,7 @@ if (appExist) {
             process.exit();
         }
         //this.supportKits = hasFeature('supportKits');
-        if (this.includeReactJS || this.supportECMA6) {
+        if (this.includeReactJSAndReflux || this.supportECMA6) {
             this.includeBrowserify = true;
         };
 
@@ -226,7 +226,7 @@ if (appExist) {
         name: 'features',
         message: '?',
         choices: [{
-          name:'jQuery as API（建议和react一起使用）',
+          name:'jQuery as API（建议和其他框架一起使用）',
           value:'includeJqueryAPI',
           checked:false,
         },{
@@ -243,7 +243,11 @@ if (appExist) {
           checked:false
         },{
           name:'React and Reflux',
-          value:'includeReactJS',
+          value:'includeReflux',
+          checked:false
+        },{
+          name:'React and Redux',
+          value:'includeRedux',
           checked:false
         },{
           name:'Support ECMAScript 6',
@@ -269,16 +273,17 @@ if (appExist) {
           return features.indexOf(feat) !== -1;
         };
 
-        this.includeBrowserify     = hasFeature('includeBrowserify');
-        this.includeReactJS        = hasFeature('includeReactJS');
-        this.includeJqueryMultiple = hasFeature('includeJqueryMultiple');
-        this.includeJquerySPA      = hasFeature('includeJquerySPA');
-        this.includeBackbone   = hasFeature('includeBackbone');
-        this.includeSeajs      = hasFeature('includeSeajs');
-        this.supportECMA6      = hasFeature('supportECMA6');
-        this.supportKits       = hasFeature('supportKits');
-        this.exitProcess       = hasFeature('exitProcess');
-
+        this.includeBrowserify      = hasFeature('includeBrowserify');
+        this.includeReflux          = hasFeature('includeReflux');
+        this.includeRedux           = hasFeature('includeRedux');
+        this.includeJqueryMultiple  = hasFeature('includeJqueryMultiple');
+        this.includeJquerySPA       = hasFeature('includeJquerySPA');
+        this.includeBackbone        = hasFeature('includeBackbone');
+        this.includeSeajs           = hasFeature('includeSeajs');
+        this.supportECMA6           = hasFeature('supportECMA6');
+        this.supportKits            = hasFeature('supportKits');
+        this.exitProcess            = hasFeature('exitProcess');
+        this.includeReactJS         = this.includeReflux  || this.includeRedux;
 
         if(this.exitProcess){
            process.exit();
@@ -331,18 +336,18 @@ if (appExist) {
                   this.template( rootPath+ 'route.js' , 'app/common/js/route.js');
               } 
           }
-
-      
       },
 
       writeReact:function(){
+
           if(this.includeReactJS){
 
               var rootPath = 'project/react/';
-
               this.template( rootPath + 'createComponent.js', 'createComponent.js');
               this.template( rootPath + 'index.html', 'index.html');
+              this.template( rootPath + 'app.js', 'app.js');
               this.copy( rootPath +'index.js' , 'app/components/index.js');
+
           }
 
       
@@ -458,7 +463,9 @@ if (appExist) {
             this.mkdir('app/common');
             this.mkdir('app/page');
             this.mkdir('app/resource');
-            this.mkdir('app/resource/images');
+            this.mkdir('app/resource/xuxu');
+            this.mkdir('app/resource/css');
+            this.mkdir('app/resource/font');
             // this.copy('project/debug.html', 'app/views/debug.html');
         }
 
@@ -480,8 +487,8 @@ if (appExist) {
       }
 
       this.installDependencies({
-        skipMessage: this.options['skip-install-message'],
-        skipInstall: this.options['skip-install']
+          skipMessage: this.options['skip-install-message'],
+          skipInstall: this.options['skip-install']
       });
 
       this.on('end', function () {
