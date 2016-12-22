@@ -3,28 +3,48 @@
  * @date 2016.11.25
  *
  * regist async module for loaded  when system is running
- * @require.async <%= appname %>:app/page/index/index.js
 **/
-var $ = require('jquery');
 
-(function(){
+module.exports = {
 
-    var navigation = function() {
+    DEFUALT_PAGE : 'index',
 
-        $('body').empty(); 
-         
-        var hash = location.hash.split("#")[1];
-        var path = '<%= appname %>:app/page/'+ hash +'/' + hash;
-        
-        require.async(path, function (page) {
-            page.render();
-        });
+    init : function(){
+
+        var me = this;
+
+        window.addEventListener('hashchange', function () {
+            me.navigation();
+        }, false);
+
+    },
+    
+    navigation : function() {
+    
+        $('.root').empty(); 
+
+        var path = this.getPath();
+
+        require.ensure([],function(require){
+
+              var page = require('Page/' + path);
+              page.render();
+        })
+    },
+
+    getPath : function (){
+
+        var hash  = location.hash.split("#")[1] || this.DEFUALT_PAGE;
+        var pageParam  = hash.split('_');
+        var dir   = pageParam.join('/'); 
+        var page  = pageParam.pop();
+        var path  =  '';
+
+        dir = dir ? dir + '/' : '';
+        path = dir + page;
+
+        return path;
     }
+    
+}
 
-    navigation();
-
-    window.addEventListener('hashchange', function () {
-        navigation();
-    }, false);
-
-})();

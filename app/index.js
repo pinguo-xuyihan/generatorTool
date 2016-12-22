@@ -231,12 +231,8 @@ if (appExist) {
           checked:false,
         },{
           name:'jQuery-单页(支持自动创建前端路由，前端模板，建议简单项目使用)',
-          value:'includeJquerySPA',
+          value:'includeJqueryPro',
           checked:false,
-        },{
-          name:'jQuery-多页(包含前端模板，建议简单项目使用)',
-          value:'includeJqueryMultiple',
-          checked:true,
         },{
           name:'Backbone',
           value:'includeBackbone',
@@ -277,7 +273,7 @@ if (appExist) {
         this.includeReflux          = hasFeature('includeReflux');
         this.includeRedux           = hasFeature('includeRedux');
         this.includeJqueryMultiple  = hasFeature('includeJqueryMultiple');
-        this.includeJquerySPA       = hasFeature('includeJquerySPA');
+        this.includeJqueryPro       = hasFeature('includeJqueryPro');
         this.includeBackbone        = hasFeature('includeBackbone');
         this.includeSeajs           = hasFeature('includeSeajs');
         this.supportECMA6           = hasFeature('supportECMA6');
@@ -289,7 +285,7 @@ if (appExist) {
            process.exit();
         }
 
-        if((this.includeJqueryMultiple || this.includeJquerySPA )&& !this.includeReactJS){
+        if((this.includeJqueryMultiple || this.includeJqueryPro )&& !this.includeReactJS){
             this.supportFontTpl = true;
         }
 
@@ -304,38 +300,30 @@ if (appExist) {
     writing: {
 
       fisConfig :function(){
-          this.template('fis-conf.js');
+          this.template('webpack.config.js');
       },
 
       packageJSON: function() {
           this.template('_package.json', 'package.json');
       },
 
-      writeMod:function(){
-          this.template('project/mod.js', 'app/common/lib/mod.js');
-      },
-
       writeJquery:function(){
-          if(this.includeJqueryMultiple || this.includeJquerySPA){
-
-              var tmplPath = this.includeJqueryMultiple ? 
-                          'multiple/' : (this.includeJquerySPA ? 'spa/' : '');
+          if(this.includeJqueryPro){
 
               var rootPath = 'project/jquery/';
 
-              this.copy( rootPath + tmplPath + 'index.tmpl'  , 'app/page/index/index.tmpl' );
-              this.template( rootPath+ tmplPath +'createPage.js', 'createPage.js')
-
+              this.template( rootPath + 'createPage.js', 'createPage.js')
               this.template( rootPath + 'createWidget.js', 'createWidget.js');
-              this.template( rootPath + 'index.html', 'index.html');
-              this.copy( rootPath +'index.inline.less' , 'app/page/index/index.inline.less');
-              this.copy(rootPath + 'index.js', 'app/page/index/index.js');
-              
-              if(this.includeJquerySPA) {
-                  
-                  this.template( rootPath+ 'route.js' , 'app/common/js/route.js');
-              } 
+
+              this.copy( rootPath + 'index.html'  , 'app/page/index/index.html' );
+              this.copy( rootPath + 'index.less'  , 'app/page/index/index.less');
+              this.copy( rootPath + 'index.js'    , 'app/page/index/index.js');
+              this.copy( rootPath + 'route.js'    , 'app/common/js/route.js');
+
+              this.template( 'project/index.html', 'index.html');
+              this.copy(rootPath + 'app.js', 'app.js');
           }
+
       },
 
       writeReact:function(){
@@ -344,42 +332,18 @@ if (appExist) {
 
               var rootPath = 'project/react/';
               this.template( rootPath + 'createComponent.js', 'createComponent.js');
-              this.template( rootPath + 'index.html', 'index.html');
+              this.template( 'project/index.html', 'index.html');
               this.template( rootPath + 'app.js', 'app.js');
-              this.copy( rootPath +'index.js' , 'app/components/index.js');
+              this.copy( rootPath +'index.js' , 'app/page/index.js');
 
           }
-
       
       },
-      // writeIndex:function(){
-      //     this.template('project/index.html', 'index.html');
-
-      // },
-
-      // writeCreateWidget :function(){
-      //     this.template( 'createWidget.js', 'createWidget.js');
-      // },
 
       git: function() {
           this.copy('gitignore', '.gitignore');
           //this.copy('gitattributes', '.gitattributes');
       },
-
-      /**
-      *  used only in jquery project
-      **/
-      // tmpl:function(){
-
-      //   var tmplPath = this.includeJqueryMultiple ? 
-      //                 'multiple' : (this.includeJquerySPA ? 'spa' : '');
-
-      //   var fromPath = tmplPath ? 'project/jquery/'+ tmplPath  +'/index.tmpl';
-      //   var toPath  = 'app/page/index/index.tmpl';
-
-      //   this.copy( fromPath , toPath );
-
-      // },
 
 
       // bower: function() {
@@ -440,7 +404,7 @@ if (appExist) {
       app: function () {
 
         if( this.includeJqueryMultiple || 
-            this.includeJquerySPA || 
+            this.includeJqueryPro || 
             this.includeBackbone){
 
             this.mkdir('app');
@@ -463,7 +427,7 @@ if (appExist) {
             this.mkdir('app/common');
             this.mkdir('app/page');
             this.mkdir('app/resource');
-            this.mkdir('app/resource/xuxu');
+            this.mkdir('app/resource/images');
             this.mkdir('app/resource/css');
             this.mkdir('app/resource/font');
             // this.copy('project/debug.html', 'app/views/debug.html');

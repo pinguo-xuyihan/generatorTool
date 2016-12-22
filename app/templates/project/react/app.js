@@ -1,23 +1,14 @@
-var React = require('react');
-var ReactRouter = require('reactRouter');
-var indexPage = require('react:app/page/index');
 
-var Link = ReactRouter.Link,
+import React from 'react';
+import { render } from 'react-dom';
+import { Router, Route } from 'react-router';
+import indexPage from './app/page/index/index';
+/* REQUIRE FILES HOOK */
 
-    IndexRoute = ReactRouter.IndexRoute,
 
-    Route = ReactRouter.Route,
-
-    hashHistroy = ReactRouter.hashHistroy,
-
-    Router = ReactRouter.Router,
-
-    Redirect = ReactRouter.Redirect;
-
-React.render(
-    (<Router>
-        <Route path="/" component={indexPage} >
-            <IndexRoute component={indexPage} />
-        </Route>
-    </Router>)
-    ,document.getElementById('root'));
+render(
+  (<Router>
+    <Route path="/" component={indexPage}>
+      <Route path="/index" component={indexPage} />
+    </Route>
+  </Router>), document.querySelector('.root'));

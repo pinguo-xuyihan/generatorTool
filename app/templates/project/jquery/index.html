@@ -1,28 +1,11 @@
-<!doctype html>
-<html lang="">
-  <head>
-    <meta http-equiv="pragma" content="no-cache"> 
-    <meta http-equiv="Cache-Control " content="no-cache,must-revalidate"> 
-    <meta name="description" content="">
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
-    <title><%= appname %></title>
-    <%if(includeJquerySPA){%>
-    <script src="app/common/js/route.js" type="text/javascript"></script> 
-    <%}%>
-    <script src="app/common/lib/mod.js" type="text/javascript"></script>
-  </head>
-  <body>
-    
-    <script type="text/javascript">
-       <%if(supportECMA6 && includeJqueryMultiple){%>
-        let indexPage = require('jqEs6:app/page/index/index');
-        let index = new indexPage();
-        index.render();  
-      <%}else if(includeJqueryMultiple){%>
-        var indexPage = require('<%= appname %>:app/page/index/index');
-        indexPage.render();
-      <%}%>       
-    </script>
-  </body>
-</html>
+
+<div class="index-page-logs">
+
+	<p>目前你选择的项目适合构建小型单页项目，</p>
+	<p>可直接执行node createPage [yourPgae]来创建你的页面，通过 /index#[yourPage]来访问，相应的页面文件在page/[youPage]下</p> 
+	<p>其他注意点：组件请放在widget下(会自动帮你进行模块化),如果你有通用的js文件请放在common/js下，</p>
+	<p>如果是通用的库文件，请放在common/lib下(这两个目录下没有进行自动模块化，所以你有立即执行的文件也行放在这两个文件下),</p>
+	<p>图片，字体等资源请放在resource下</p>
+	<footer>good luck~</footer>
+
+</div>

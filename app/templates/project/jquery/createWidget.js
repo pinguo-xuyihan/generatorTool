@@ -7,7 +7,8 @@ if (arguments.length === 0) {
 }
 
 var widget  = arguments[0];
-var appName = '<%= appname %>';
+var subDir   = arguments[1] || '' ; 
+var appName = '<%= appname %>'.toLocaleLowerCase();
 
 var htmlTpl = [];
 htmlTpl.push('<div class="styleguide '+ appName +'-widget-' + widget + '">');
@@ -22,37 +23,45 @@ styleTpl.push('}');
 styleTpl = styleTpl.join('\n');
 
 var jsTpl = [];
-var varTag = 'var';
-<%if(supportECMA6){%>
-	varTag = 'let'
-<%}%>
-var es5Var = 'var'
-jsTpl.push(varTag + " style = __inline('./" + widget + ".inline.less');");
-jsTpl.push(varTag + " tpl   = __inline('./" + widget + ".tmpl');");
-jsTpl.push("");
-jsTpl.push("require.loadCss({");
-jsTpl.push("    name: '" + appName+"-widget-" + widget + "-style',");
-jsTpl.push("    content: style");
-jsTpl.push("});");
-jsTpl.push("");
 
 <%if(supportECMA6){%>
-jsTpl.push("export default  class "+widget + "  {");
-jsTpl.push(" 	render () {");
-jsTpl.push(" 		"+ varTag+ " data ={};");
-jsTpl.push(" 		//TODO");
+	es6Var = 'let'
+<%}%>
+var es5Var = 'var'
+
+<%if(supportECMA6){%>
+
+jsTpl.push(es6Var + " template = require('html!./"+ widget +".html');");
+jsTpl.push(" require('./"+ widget +".less');");
+jsTpl.push("");
+
+jsTpl.push("export default  class index ");
+jsTpl.push(" 	render()  {");
+jsTpl.push(" 		$('.root').html(template);");
+jsTpl.push(" 		this.bind();");
+jsTpl.push(" 	},");
+jsTpl.push(" 	bind () {");
+jsTpl.push(" 		//bind Dom Event");
 jsTpl.push(" 	},");
 jsTpl.push("};");
-jsTpl = jsTpl.join('\n');
 <%}else{%>
+jsTpl.push(es5Var + " template = require('html!./"+ widget +".html');");
+jsTpl.push(" require('./"+ widget +".less');");
+jsTpl.push("");
+
 jsTpl.push("module.exports = {");
 jsTpl.push(" 	render: function () {");
-jsTpl.push(" 		"+ varTag+ " data ={};");
-jsTpl.push(" 		//TODO");
+jsTpl.push(" 		$('.root').html(template);");
+jsTpl.push(" 		this.bind();");
+jsTpl.push(" 	},");
+jsTpl.push(" 	bind: function () {");
+jsTpl.push(" 		//bind Dom Event");
 jsTpl.push(" 	},");
 jsTpl.push("};");
-jsTpl = jsTpl.join('\n');
 <%}%>
+
+jsTpl = jsTpl.join('\n');
+
 
 function mkdirSync (dir, mode) {
 	mode = mode || 0755;
@@ -77,10 +86,19 @@ function writeFile (filename, content) {
 	});
 }
 
-mkdirSync('app/widget/' + widget);
+if(subDir){
+	
+	mkdirSync('app/widget/' + subDir + '/'+ widget);
+	writeFile ('app/widget/' + subDir + '/'+ widget + '/' + widget + '.less', styleTpl);
+	writeFile ('app/widget/' + subDir + '/'+ widget + '/' + widget + '.js', jsTpl);
+	writeFile ('app/widget/' + subDir + '/'+ widget + '/' + widget + '.html', htmlTpl);
 
-writeFile ('app/widget/'+ widget + '/' + widget + '.inline.less', styleTpl);
-writeFile ('app/widget/'+ widget + '/' + widget + '.js', jsTpl);
-writeFile ('app/widget/'+ widget + '/' + widget + '.tmpl', htmlTpl);
+}else{
+	mkdirSync('app/widget/' + widget);
+	writeFile ('app/widget/'+ widget + '/' + widget + '.less', styleTpl);
+	writeFile ('app/widget/'+ widget + '/' + widget + '.js', jsTpl);
+	writeFile ('app/widget/'+ widget + '/' + widget + '.html', htmlTpl);
+}
 
-console.log('Create Widget Success!');
+
+console.log('Create widget Success!');
