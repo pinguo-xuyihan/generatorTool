@@ -10,11 +10,12 @@ module.exports = {
 		filename : 'bundle.js',
 		path     :  './build/',
 		sourceMapFilename : 'bundle.map.js',
-
+		
 	},
 	devtool: "source-map",
 
 	module: {
+
 		loaders:[
 			{ 
 				test: /\.css$/, 
@@ -50,6 +51,8 @@ module.exports = {
 				}
 			},
 			<%}%>
+			// TODO 
+
 			// { 
 			// 	test: require.resolve("jquery"), 
 			// 	loader: "expose-loader?jQuery" 
@@ -64,7 +67,7 @@ module.exports = {
 	        Widget : path.resolve(__dirname , 'app/widget'),
 	        <%}%>
 	        <%if(includeReactJS){%>
-	        components : path.resolve(__dirname , 'app/components'),
+	        Components : path.resolve(__dirname , 'app/components'),
 	       	<%}%>
 	    }
 	},

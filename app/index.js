@@ -426,6 +426,8 @@ if (appExist) {
             this.mkdir('app/components');
             this.mkdir('app/common');
             this.mkdir('app/page');
+            this.mkdir('app/actions');
+            this.mkdir('app/stores');
             this.mkdir('app/resource');
             this.mkdir('app/resource/images');
             this.mkdir('app/resource/css');
