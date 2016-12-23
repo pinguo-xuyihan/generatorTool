@@ -246,6 +246,10 @@ if (appExist) {
           value:'includeRedux',
           checked:false
         },{
+          name:'Vue',
+          value:'includeVue',
+          checked:false
+        },{
           name:'Support ECMAScript 6',
           value:'supportECMA6',
           checked:false
@@ -272,6 +276,7 @@ if (appExist) {
         this.includeBrowserify      = hasFeature('includeBrowserify');
         this.includeReflux          = hasFeature('includeReflux');
         this.includeRedux           = hasFeature('includeRedux');
+        this.includeVue             = hasFeature('includeVue');
         this.includeJqueryMultiple  = hasFeature('includeJqueryMultiple');
         this.includeJqueryPro       = hasFeature('includeJqueryPro');
         this.includeBackbone        = hasFeature('includeBackbone');
@@ -289,7 +294,7 @@ if (appExist) {
             this.supportFontTpl = true;
         }
 
-        if (this.includeReactJS) {
+        if (this.includeReactJS || this.includeVue) {
             this.supportECMA6 = true;
         };
 
@@ -335,6 +340,20 @@ if (appExist) {
               this.template( 'project/index.html', 'index.html');
               this.template( rootPath + 'app.js', 'app.js');
               this.copy( rootPath +'index.js' , 'app/page/index.js');
+
+          }
+      
+      },
+
+      writeVue:function(){
+
+          if(this.includeVue){
+
+              var rootPath = 'project/vue/';
+              this.template( 'project/index.html', 'index.html');
+              this.template( rootPath + 'app.js', 'app.js');
+              this.copy( rootPath +'index.vue' , 'app/page/index.vue');
+              this.copy( rootPath +'main.vue' , 'app/page/main.vue');
 
           }
       

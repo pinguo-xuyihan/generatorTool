@@ -12,7 +12,11 @@
     <%}%>
   </head>
   <body>
-    <div class="root"></div>
+    <div class="root">
+        <%if(includeVue){%>
+            <router-view></router-view>
+        <%}%>
+    </div>
     <script src="bundle.js"></script>
   </body>
 </html>

@@ -41,6 +41,12 @@ module.exports = {
                 loader: "react-proxy-loader"
             }
 			<%}%>
+			<%if(includeVue){%>
+			{   
+		        test: /\.vue$/, 
+		        loader: 'vue-loader',  
+		    },
+			<%}%>
 			<%if(supportECMA6){%>
 			{ 	
 				test: /\.js$/, 
