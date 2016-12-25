@@ -2,7 +2,7 @@
   "name": "generator-pg-cloud",
   "version": "1.0.0",
   "description": "generate project by automatic tools ",
-  "main": "index.js",
+  "main": "app/index.js",
   "dependencies": {
     "generator-mocha": "^0.3.1",
     "inquirer": "^2.0.0",
