@@ -1,5 +1,5 @@
 {
-  "name": "generator-pg-cloud",
+  "name": "generator-pg-tools",
   "version": "1.0.0",
   "description": "generate project by automatic tools ",
   "main": "app/index.js",
