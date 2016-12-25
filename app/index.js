@@ -3,6 +3,7 @@ var fs       = require('fs');
 var path     = require('path');
 var yeoman   = require('yeoman-generator');
 var wiredep  = require('wiredep');
+var inquirer = require('inquirer');
 
 var deleteFolderRecursive = function(path) {
 
@@ -62,14 +63,16 @@ if (appExist) {
     initializing: function () {
       this.pkg = require('../package.json');
       this.allowUpdate = false;
-      this.includeSeajs = false;
-      this.includeBrowserify = false;
-      this.includeReactJSAndReflux = false;
+      this.includeReactAndReflux = false;
       this.supportECMA6 = false;
       //this.supportKits = false;
-      if(fs.existsSync(process.env.PWD+"/node_modules/browserify")) this.includeBrowserify = true;
-      if(fs.existsSync(process.env.PWD+"/node_modules/react")) this.includeReactJS = true;
-      if(fs.existsSync(process.env.PWD+"/node_modules/babelify")) this.includeReactJS = true;
+      if(fs.existsSync(process.env.PWD+"/node_modules/react")) this.includeReact = true;
+      if(fs.existsSync(process.env.PWD+"/node_modules/jquery")) this.includeJquery = true;
+      if(fs.existsSync(process.env.PWD+"/node_modules/vue")) this.includeVue = true;
+
+      if(this.includeJquery || this.includeVue){
+          this.supportECMA6 = true;
+      }
     },
 
     prompting: function () {
@@ -85,17 +88,17 @@ if (appExist) {
           value:'allowUpdate',
           checked:false
         },{
-          name:'Browserify',
-          value:'includeBrowserify',
-          checked:this.includeBrowserify
+          name:'jQuery',
+          value:'includeJquery',
+          checked:this.includeJquery
         },{
-          name:'React and Reflux',
-          value:'includeReactJSAndReflux',
-          checked:this.includeReactJSAndReflux
+          name:'React',
+          value:'includeReact',
+          checked:this.includeReact
         },{
-          name:'Support ECMAScript 6',
-          value:'supportECMA6',
-          checked:this.supportECMA6
+          name:'Vue',
+          value:'includeVue',
+          checked:this.includeVue
         },{
           name:'exit',
           value:'exitProcess',
@@ -112,16 +115,16 @@ if (appExist) {
         };
 
         this.allowUpdate       = hasFeature('allowUpdate');
-        this.includeBrowserify = hasFeature('includeBrowserify');
-        this.Reflux            = hasFeature('includeReactJSAndReflux');
-        this.supportECMA6      = hasFeature('supportECMA6');
+        this.includeJquery     = hasFeature('includeJquery');
+        this.includeReact      = hasFeature('includeReact');
+        this.includeVue        = hasFeature('includeVue');
         this.exitProcess       = hasFeature('exitProcess');
 
         if(this.exitProcess){
             process.exit();
         }
         //this.supportKits = hasFeature('supportKits');
-        if (this.includeReactJSAndReflux || this.supportECMA6) {
+        if (this.includeReactAndReflux || this.supportECMA6) {
             this.includeBrowserify = true;
         };
 
@@ -133,26 +136,24 @@ if (appExist) {
         }else{
 
           deleteFolderRecursive(process.env.PWD+'/node_modules');
-          if(fs.existsSync(process.env.PWD+"/gulpfile.js")) fs.unlinkSync(process.env.PWD+'/gulpfile.js');
           if(fs.existsSync(process.env.PWD+"/package.json")) fs.unlinkSync(process.env.PWD+'/package.json');
           if(fs.existsSync(process.env.PWD+"/.gitignore")) fs.unlinkSync(process.env.PWD+'/.gitignore');
           if(fs.existsSync(process.env.PWD+"/.gitattributes")) fs.unlinkSync(process.env.PWD+'/.gitattributes');
           if(fs.existsSync(process.env.PWD+"/.jshintrc")) fs.unlinkSync(process.env.PWD+'/.jshintrc');
           if(fs.existsSync(process.env.PWD+"/.editorconfig")) fs.unlinkSync(process.env.PWD+'/.editorconfig');
-        
         }
-
         done();
       }.bind(this));
     },
 
     writing: {
-      gulpfile: function() {
-        this.template('gulpfile.js');
+
+      webpackConfig :function(){
+          this.template('webpack.config.js');
       },
 
       packageJSON: function() {
-        this.template('_package.json', 'package.json');
+          this.template('_package.json', 'package.json');
       },
 
       jshint: function () {
@@ -216,42 +217,30 @@ if (appExist) {
     prompting: function () {
 
       var done = this.async();
-
+      var me = this;
       if (!this.options['skip-welcome-message']) {
         this.log('==========\'Allo \'allo! Out of the box I include HTML5 Boilerplate, jQuery, and a gulpfile.js to build your app.==========');
       }
 
-      var prompts = [{
+    var prompts = {
         type: 'checkbox',
         name: 'features',
         message: '?',
         choices: [{
-          name:'jQuery as API（建议和其他框架一起使用）',
+          name:'jQuery as API',
           value:'includeJqueryAPI',
           checked:false,
         },{
-          name:'jQuery-单页(支持自动创建前端路由，前端模板，建议简单项目使用)',
-          value:'includeJqueryPro',
+          name:'jQuery',
+          value:'includeJquery',
           checked:false,
         },{
-          name:'Backbone',
-          value:'includeBackbone',
-          checked:false
-        },{
-          name:'React and Reflux',
-          value:'includeReflux',
-          checked:false
-        },{
-          name:'React and Redux',
-          value:'includeRedux',
+          name:'React',
+          value:'includeReact',
           checked:false
         },{
           name:'Vue',
           value:'includeVue',
-          checked:false
-        },{
-          name:'Support ECMAScript 6',
-          value:'supportECMA6',
           checked:false
         },{
           name:'常规套件(PGBridge, PGClip, PGServer)',
@@ -262,49 +251,117 @@ if (appExist) {
             value:'exitProcess',
             checked:false
         }]
-      }];
+      };
+
+      inquirer.prompt([ prompts, {
+          when: function (answers) {
+            var features = answers.features;
+            var hasFeature = function (feat) {
+              return features.indexOf(feat) !== -1;
+            };
+            this.includeJquery       = hasFeature('includeJquery');
+
+            return this.includeJquery;
+          },
+          name: 'fontTemplate',
+          message: '选择所需要的前端模板',
+          type: 'checkbox',
+          choices: [
+            {
+                name:'不包含模板',
+                value:'noTemplate',
+                checked:false
+            },
+            {
+                name:'handlebars',
+                value:'includeHandlebars',
+                checked:false
+            }
+          ],
+        },
+        {
+          when: function (answers) {
+            var features = answers.features;
+            var hasFeature = function (feat) {
+              return features.indexOf(feat) !== -1;
+            };
+            this.includeReact  = hasFeature('includeReact');
+
+            return this.includeReact;
+          },
+          name: 'reactDataFlow',
+          message: 'chooise a dataflow architecture of react',
+          type: 'checkbox',
+          choices: [
+            {
+                name:'no need',
+                value:'noDataFlow',
+                checked:false
+            },
+            {
+                name:'reflux',
+                value:'includeReflux',
+                checked:false
+            },
+            { 
+                name:'redux',
+                value:'includeRedux',
+                checked:false
+            }
+          ],
+        }], function (answers) {
+        }).then(function(answers){
+            var features = answers.features;
+
+            var hasFeature = function (arr,feat) {
+
+              return arr.indexOf(feat) !== -1;
+            };
+            me.includeReact    = hasFeature(features, 'includeReact');
+            me.includeVue      = hasFeature(features, 'includeVue');
+            me.includeJquery   = hasFeature(features, 'includeJquery');
+            me.supportKits     = hasFeature(features, 'supportKits');
+            me.exitProcess     = hasFeature(features, 'exitProcess');
+
+            me.includeReflux  = '';
+            me.includeRedux  = '';
+            me.includeHandlebars = '';
+            me.supportECMA6 = '';
+
+            if(me.includeReact){
+                
+                var reactDataFlow   = answers.reactDataFlow;
+                me.noDataFlow     = hasFeature(reactDataFlow, 'noDataFlow');
+                me.includeReflux  = hasFeature(reactDataFlow, 'includeReflux');
+                me.includeRedux   = hasFeature(reactDataFlow, 'includeRedux');
+
+            } 
+
+            if(me.includeJquery){
+                var fontTemplate  = answers.fontTemplate;
+
+                me.noTemplate     = hasFeature(fontTemplate, 'noTemplate');
+                me.includeHandlebars  = hasFeature(fontTemplate, 'includeHandlebars');
+                me.includeJade  = hasFeature(fontTemplate, 'includeJade');
+
+            }
+            if(me.exitProcess){
+               process.exit();
+            }
+
+            if (me.includeVue || me.includeJquery) {
+                me.supportECMA6 = true;
+            };
+            done();
+
+        });
 
 
-      this.prompt(prompts, function (answers) {
-
-        var features = answers.features;
-
-        var hasFeature = function (feat) {
-          return features.indexOf(feat) !== -1;
-        };
-
-        this.includeBrowserify      = hasFeature('includeBrowserify');
-        this.includeReflux          = hasFeature('includeReflux');
-        this.includeRedux           = hasFeature('includeRedux');
-        this.includeVue             = hasFeature('includeVue');
-        this.includeJqueryMultiple  = hasFeature('includeJqueryMultiple');
-        this.includeJqueryPro       = hasFeature('includeJqueryPro');
-        this.includeBackbone        = hasFeature('includeBackbone');
-        this.includeSeajs           = hasFeature('includeSeajs');
-        this.supportECMA6           = hasFeature('supportECMA6');
-        this.supportKits            = hasFeature('supportKits');
-        this.exitProcess            = hasFeature('exitProcess');
-        this.includeReactJS         = this.includeReflux  || this.includeRedux;
-
-        if(this.exitProcess){
-           process.exit();
-        }
-
-        if((this.includeJqueryMultiple || this.includeJqueryPro )&& !this.includeReactJS){
-            this.supportFontTpl = true;
-        }
-
-        if (this.includeReactJS || this.includeVue) {
-            this.supportECMA6 = true;
-        };
-
-        done();
-      }.bind(this));
     },
 
     writing: {
 
-      fisConfig :function(){
+      webpackConfig :function(){
           this.template('webpack.config.js');
       },
 
@@ -313,14 +370,20 @@ if (appExist) {
       },
 
       writeJquery:function(){
-          if(this.includeJqueryPro){
+          if(this.includeJquery){
 
               var rootPath = 'project/jquery/';
 
               this.template( rootPath + 'createPage.js', 'createPage.js')
               this.template( rootPath + 'createWidget.js', 'createWidget.js');
 
-              this.copy( rootPath + 'index.html'  , 'app/page/index/index.html' );
+
+              if(this.includeHandlebars){
+                  this.copy( rootPath + 'index.handlebars'  , 'app/page/index/index.handlebars' );
+              }else{
+                  this.copy( rootPath + 'index.html'  , 'app/page/index/index.html' );
+              }
+
               this.copy( rootPath + 'index.less'  , 'app/page/index/index.less');
               this.copy( rootPath + 'index.js'    , 'app/page/index/index.js');
               this.copy( rootPath + 'route.js'    , 'app/common/js/route.js');
@@ -333,16 +396,18 @@ if (appExist) {
 
       writeReact:function(){
 
-          if(this.includeReactJS){
+          if(this.includeReact){
 
               var rootPath = 'project/react/';
               this.template( rootPath + 'createComponent.js', 'createComponent.js');
               this.template( 'project/index.html', 'index.html');
               this.template( rootPath + 'app.js', 'app.js');
-              this.copy( rootPath +'index.js' , 'app/page/index.js');
-
+              this.copy( rootPath + 'root.js', 'app/root.js');
+              this.copy(rootPath + 'dll.config.js','dll.config.js');
+              this.copy(rootPath + 'server.js','server.js');
+              this.copy( rootPath +'index.js' , 'app/page/index/index.js');
+              this.copy( rootPath +'index.less' , 'app/page/index/index.less');
           }
-      
       },
 
       writeVue:function(){
@@ -364,66 +429,10 @@ if (appExist) {
           //this.copy('gitattributes', '.gitattributes');
       },
 
-
-      // bower: function() {
-      //   var bower = {
-      //       name: this._.slugify(this.appname),
-      //       private: true,
-      //       dependencies: {}
-      //   };
-
-      //   if (this.includeJquery) bower.dependencies.jquery = '~2.1.1';
-      //   if (this.includeBackbone) bower.dependencies.backbone = '*';
-      //   if (this.supportKits)  bower.dependencies.PGBridge = '*';
-      //   //if (this.includeSeajs) bower.dependencies.seajs = '*';
-
-      //   this.copy('bowerrc', '.bowerrc');
-      //   this.write('bower.json', JSON.stringify(bower, null, 2));
-      // },
-
-      // jshint: function () {
-      //   this.copy('jshintrc', '.jshintrc');
-      // },
-
-      // editorConfig: function () {
-      //   this.copy('editorconfig', '.editorconfig');
-      // },
-
-      // h5bp: function () {
-      //   this.copy('robots.txt', 'app/robots.txt');
-      // },
-
-      // mainStylesheet: function () {
-      //   var css = 'project/index.css';
-
-      //   // if (this.includeSass) {
-      //   //   css += '.scss';
-      //   // } else {
-      //   //   css += '.css';
-      //   // }
-
-      //   this.copy(css, 'app/views/index.css');
-      // },
-
-      // writeIndex: function () {
-      //   this.indexFile = this.src.read('index.html');
-      //   this.indexFile = this.engine(this.indexFile, this);
-
-      //   this.indexFile = this.appendFiles({
-      //     html: this.indexFile,
-      //     fileType: 'js',
-      //     optimizedPath: '/scripts/index/index.js',
-      //     sourceFileList: ['/views/index.js']
-      //   });
-    
-
-      //   this.write('app/index.html', this.indexFile);
-      // },
-
       app: function () {
 
         if( this.includeJqueryMultiple || 
-            this.includeJqueryPro || 
+            this.includeJquery || 
             this.includeBackbone){
 
             this.mkdir('app');
@@ -444,6 +453,8 @@ if (appExist) {
             this.mkdir('app');
             this.mkdir('app/components');
             this.mkdir('app/common');
+            this.mkdir('app/common/js');
+            this.mkdir('app/common/lib');
             this.mkdir('app/page');
             this.mkdir('app/actions');
             this.mkdir('app/stores');
@@ -477,30 +488,7 @@ if (appExist) {
       });
 
       this.on('end', function () {
-        var bowerJson = this.dest.readJSON('bower.json');
-
-        //将bower_components里的依赖注入index.html
-        // wiredep({
-        //   bowerJson: bowerJson,
-        //   directory: 'bower_components',
-        //   //排除列表
-        //   exclude: [],
-        //   ignorePath: /^(\.\.\/)*\.\./,
-        //   src: 'index.html'
-        // });
-
-        // if (this.includeSass) {
-        //   // wire Bower packages to .scss
-        //   wiredep({
-        //     bowerJson  : bowerJson,
-        //     directory  : 'bower_components',
-        //     ignorePath : /^(\.\.\/)+/,
-        //     src        : 'app/views/*.scss'
-        //   });
-        // }
-
-        // ideally we should use composeWith, but we're invoking it here
-        // because generator-mocha is changing the working directory
+       // var bowerJson = this.dest.readJSON('bower.json');
         // https://github.com/yeoman/generator-mocha/issues/28
         this.invoke(this.options['test-framework'], {
             options: {

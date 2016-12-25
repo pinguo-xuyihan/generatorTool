@@ -3,12 +3,19 @@ var path = require('path');
 
 module.exports = {
 	
-	entry: './app.js',
+    entry: [
+        'webpack-dev-server/client?http://0.0.0.0:8080',
+        'webpack/hot/dev-server',
+        <%if(includeReact){%>
+        'react-hot-loader/patch', 
+        <%}%>
+        path.join(__dirname, 'app.js')
+    ],
 
 	output: {
 
 		filename : 'bundle.js',
-		path     :  './build/',
+		path : path.join(__dirname, 'build') ,
 		sourceMapFilename : 'bundle.map.js',
 		
 	},
@@ -25,21 +32,21 @@ module.exports = {
 				test: /\.less$/,
 				loader: "style-loader!css-loader!less-loader?strictMath&noIeCompat"
 			},
-			<%if(includeReactJS){%>
-			{ 	
+			<%if(includeReact){%>
+           	{ 	
 				test: /\.js$/, 
 				exclude: /node_modules/, 
 				loader: 'babel-loader',
 				query : {
-					presets:['react'],
-				}
+					presets:['react','es2015'],
+				}		
 			},
 			{
-                test: [
-                    /component\.jsx$/, // select component by RegExp
-                ],
-                loader: "react-proxy-loader"
-            }
+                test: /\.js$/, 
+                loaders: [ "react-proxy-loader",'babel-loader?presets[]=react'],
+                exclude: /node_modules/,
+                include: path.join(__dirname, 'app/page') 
+            },
 			<%}%>
 			<%if(includeVue){%>
 			{   
@@ -57,31 +64,27 @@ module.exports = {
 				}
 			},
 			<%}%>
-			// TODO 
-
-			// { 
-			// 	test: require.resolve("jquery"), 
-			// 	loader: "expose-loader?jQuery" 
-			// },
+			<%if(includeHandlebars){%>
+			{ 	test: /\.handlebars$/, 
+				loader: "handlebars-loader" }
+			<%}%>
 		]
 	},
 
 	resolve : {
 	    alias: {
 	        Page : path.resolve(__dirname, 'app/page/'),
-	        <%if(includeJqueryPro){%>
+	        <%if(includeJquery){%>
 	        Widget : path.resolve(__dirname , 'app/widget'),
 	        <%}%>
-	        <%if(includeReactJS){%>
+	        <%if(includeReact){%>
 	        Components : path.resolve(__dirname , 'app/components'),
 	       	<%}%>
 	    }
 	},
 	
 	externals: {
-	    // require("jquery") is external and available
-	    //  on the global var jQuery
-	    <%if(includeJqueryPro){%>
+	    <%if(includeJquery){%>
 	    "jquery": "jQuery"
 	    <%}%>
 	},
@@ -93,10 +96,12 @@ module.exports = {
 
     plugins: [
     	new webpack.NoErrorsPlugin(), 
-      	new webpack.HotModuleReplacementPlugin()
-     //  	new webpack.optimize.CommonsChunkPlugin({
-	    //    name : 'vendor',
-	    //    filename : 'vendor.bundle.js'
-	    // })
+      	new webpack.HotModuleReplacementPlugin(),
+      	<%if(includeReact){%>
+      	new webpack.DllReferencePlugin({
+            context: __dirname,
+            manifest: require('./manifest.json'),
+        }),
+        <%}%>
     ]
 };

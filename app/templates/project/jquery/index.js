@@ -1,6 +1,8 @@
 /* jshint devel:true */
 <%if(supportECMA6){%>
 let template = require('html-loader!./index.html');
+<%}else if(includeHandlebars){%>
+var template = require('./index.handlebars');
 <%}else{%>
 var template = require('html-loader!./index.html');
 <%}%>
@@ -13,10 +15,19 @@ module.exports = {
 <%}%>
 <%if(supportECMA6){%>
     render() {
-        let data = {};
     <%}else{%>
     render: function () {
     <%}%>
-        $('.root').html(template);
+    	<%if(includeHandlebars){%>
+    	var context = {
+    		solution: " jquery + webpack + handlebars", 
+    	};
+    	var html    = template(context);
+        $('.root').html(html);
+    	<%}else{%>
+    	    $('.root').html(template);
+    	<%}%>
+
+
     } 
 }

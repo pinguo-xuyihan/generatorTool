@@ -1,14 +1,28 @@
-
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route } from 'react-router';
-import indexPage from './app/page/index/index';
+import { AppContainer } from 'react-hot-loader';
+import Root from './app/root';
 /* REQUIRE FILES HOOK */
 
+render (
+    <AppContainer>
+        <Root></Root>
+    </AppContainer>,
+    document.querySelector('.root')
+);
 
-render(
-  (<Router>
-    <Route path="/" component={indexPage}>
-      <Route path="/index" component={indexPage} />
-    </Route>
-  </Router>), document.querySelector('.root'));
+
+if(module.hot){
+	
+	module.hot.accept('./app/root' ,() => {
+		
+		let NewRoot = require('./app/root').default;
+
+		render(
+            <AppContainer>
+                <NewRoot />
+            </AppContainer>,
+			document.querySelector('.root')
+		)
+	})
+}

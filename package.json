@@ -5,9 +5,9 @@
   "main": "index.js",
   "dependencies": {
     "generator-mocha": "^0.3.1",
-    "gulp": "^3.9.1",
-    "yeoman-generator": "^0.18.10",
+    "inquirer": "^2.0.0",
     "wiredep": "^2.2.2",
+    "yeoman-generator": "^0.18.10",
     "yo": "^1.8.5"
   },
   "devDependencies": {
