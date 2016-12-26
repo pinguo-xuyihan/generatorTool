@@ -1,42 +1,67 @@
-构建工具负责提供各个框架的整体解决方案，整体基于webpack, 包括资源引入方式，更了的打包的
+构建工具负责提供整体解决方案，基于webpack, 分别包含jquery，react和vue三种方案；
+每个方案中包含依赖资源下载，资源引入方式，目录规范，编码规范，并且针对每个项目都提供了脚手架，方便快速开发
 
-JQuery
-
-
-# Guide
-***
-> 你选择的方案为： react + webpack + react-router + es6 + react-hot-loader
-***
-#### 开始你的项目
-
-开始一个项目只需要执行下面这条命令
-
+启动项目
+    
     npm start
 
-好了，已经自动帮你打开浏览器了
+所有项目启动都是只需要执行这个命令，在结束进程时，要两次 `Ctrl + C`  
+
+访问项目
+
+默认路由都是localhost:8080/#index 
+
+##JQuery
+
+ - 包含前端路由
+ - 自选前端模板（目前只推荐handlebars，支持不包含模板方案）
+ - 脚手架，用于创建页面(包含路由)，组件(widget)
+ - es6（默认支持，建议使用）
+
+ ###目录规范
+ - common/js  : 存放共有js文件，如PGTool.js
+ - common/lib : 存放共有库文件，如jquery.js
+ - page : 存放页面内容，html,css，js在一个文件夹下,样式文件使用less添加css的命名空间，避免样式污染，
+ - resource/css : 存放公共css（非页面使用级别）
+ - resource/font : 公共字体资源
+ - resource/font : 公共图片资源
+ - widget : 其他组件，可以被Page调用，如menu组件
+
 ***
 
-#### 访问你的项目
 
-默认url是[http://localhost:8080"](http://localhost:8080")  你懂得，react会在后面后面自己加上的hash的，或者是[http://localhost:8080#index"](http://localhost:8080#index") 
+##React
 
-***
+  - 自选数据流库，（包含reflux和redux，支持不选择）
+  - 热更新
+  - react-router 
+  - es6 
 
-#### 编辑你的项目
+ ###目录规范
+ - common/js  : 存放共有js文件，如PGTool.js
+ - common/lib : 存放共有库文件，如jquery.js
+ - page : 存放页面内容，html,css，js在一个文件夹下,样式文件使用less添加css的命名空间，避免样式污染，
+ - resource/css : 存放公共css（非页面使用级别）
+ - resource/font : 公共字体资源
+ - resource/font : 公共图片资源
+ - components : 组件，可以被Page调用，如menu组件
+ - actions : 存放公共数据流action
+ - stores  : 存放公共store（属于组件的store放在component组件自己目录中）
+  
 
-首先#index对应的页面在app/page下面，找到index.js修改即可
+### 还支持的
 
-修改后就会自动更新哦~ 浏览器自己也没有刷就更新了这个就是react-hot（热更新的功劳了），也就是说你做了一堆操作之后，用热更新更新某一个组件，其他组件的状态还在哦~
-
-***
-#### 新增一个页面！
- 在根目录下的app.js文件中，增加路由就好啦~ 
-***
-
-#### 还支持的
-
-- 已经把react,react-dom,react-route抽成了单独的库，每次编译的时候不会重新编译这些库，缩短了编译时间哦~
+- 已经把react,react-dom,react-route抽成了单独的库，每次编译的时候不会重新编译这些库，缩短了编译时间
 - 每个route对应的page会单独打成一个包，按请求页面加载所需资源(按需加载)
+
+
+##Vue
+
+  - vue-router 
+  - vue template  
+  - es6
+  
+  目录规范类似react；
 
 
 
