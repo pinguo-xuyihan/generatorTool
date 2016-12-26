@@ -27,7 +27,6 @@
  - resource/font : 公共图片资源
  - widget : 其他组件，可以被Page调用，如menu组件
 
-***
 
 
 ##React
