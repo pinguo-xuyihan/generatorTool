@@ -36,17 +36,18 @@
   - 热更新
   - react-router 
   - es6 
-
+  - 组件脚手架
+  
  ###目录规范
- - common/js  : 存放共有js文件，如PGTool.js
- - common/lib : 存放共有库文件，如jquery.js
- - page : 存放页面内容，html,css，js在一个文件夹下,样式文件使用less添加css的命名空间，避免样式污染，
- - resource/css : 存放公共css（非页面使用级别）
- - resource/font : 公共字体资源
- - resource/font : 公共图片资源
- - components : 组件，可以被Page调用，如menu组件
- - actions : 存放公共数据流action
- - stores  : 存放公共store（属于组件的store放在component组件自己目录中）
+  - common/js  : 存放共有js文件，如PGTool.js
+  - common/lib : 存放共有库文件，如jquery.js
+  - page : 存放页面内容，html,css，js在一个文件夹下,样式文件使用less添加css的命名空间，避免样式污染，
+  - resource/css : 存放公共css（非页面使用级别）
+  - resource/font : 公共字体资源
+  - resource/font : 公共图片资源
+  - components : 组件，可以被Page调用，如menu组件
+  - actions : 存放公共数据流action
+  - stores  : 存放公共store（属于组件的store放在component组件自己目录中）
   
 
 ### 还支持的
@@ -60,7 +61,8 @@
   - vue-router 
   - vue template  
   - es6
-  
+  - 组件脚手架
+  
   目录规范类似react；
 
 
