@@ -10,7 +10,17 @@ var HelloMessage = React.createClass({
             <h1>Guide</h1>
 				<hr/>
 				<blockquote>
-				<p>你选择的方案为： react + webpack + react-router + es6 + react-hot-loader</p>
+				<p>你选择的方案为： react + webpack + react-router + es6 + react-hot-loader
+				<%if(includePgBridge){%>
+				+ PGBridge + PGTool
+				<%}%>
+				<%if(includeCommonTool){%>
+				+ PGCommon
+				<%}%>
+				<%if(includeImageHandles){%>
+				+ PGClip + fileReader
+				<%}%>
+				</p>
 				</blockquote>
 				<hr/>
 				<h4>开始你的项目</h4>

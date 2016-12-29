@@ -17,6 +17,19 @@
             <router-view></router-view>
         <%}%>
     </div>
+    <%if(includePgBridge){%>
+    <script>document.write("<script type='text/javascript' src='https://fe.c360dn.com/common/PGBridge.js?r=" + Date.now() + "'><\/script>");</script>
+    <script>document.write("<script type='text/javascript' src='https://fe.c360dn.com/common/PGTool.js?r=" + Date.now() + "'><\/script>");</script>
+    <%}%>
+    <%if(includeCommonTool){%>
+    <script>document.write("<script type='text/javascript' src='https://fe.c360dn.com/common/PGCommon.js?r=" + Date.now() + "'><\/script>");</script>
+    <%}%>
+
+    <%if(includeImageHandles){%>
+    <script>document.write("<script type='text/javascript' src='https://fe.c360dn.com/common/PGClip.js?r=" + Date.now() + "'><\/script>");</script>
+    <script>document.write("<script type='text/javascript' src='https://fe.c360dn.com/common/fileReader.js?r=" + Date.now() + "'><\/script>");</script>
+    <%}%>
+
     <script src="bundle.js"></script>
   </body>
 </html>

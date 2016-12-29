@@ -4,7 +4,17 @@
 	<h1>Guide</h1>
 	<hr>
 	<blockquote>
-		<p> 你选择的方案为： jquery + webpack </p>
+		<p> 你选择的方案为： jquery + webpack
+		<%if(includePgBridge){%>
+		+ PGBridge + PGTool
+		<%}%>
+		<%if(includeCommonTool){%>
+		+ PGCommon
+		<%}%>
+		<%if(includeImageHandles){%>
+		+ PGBridge + PGTool
+		<%}%>
+		 </p>
 	</blockquote>
 	<hr>
 	<h4>开始你的项目</h4>
@@ -39,9 +49,7 @@
 	<p>
 		<strong>路由还支持多级路由哦~</strong>
 	</p>
-	<pre>
-		<code>node createPage [pageName] [dirName]</code>
-	</pre>
+	<pre><code>node createPage [pageName] [dirName]</code></pre>
 	<p>其中dirName为已经存在的路径名，此为相对路径，</p>
 	<p>相对于app/page, 如上例子，在list下面创建detail页面；</p>
 	<p>
