@@ -17,6 +17,9 @@
             <router-view></router-view>
         <%}%>
     </div>
+    <%if(includeVue || includeReact){%>
+    <script src="./build/lib.js"></script>
+    <%}%>
     <%if(includePgBridge){%>
     <script>document.write("<script type='text/javascript' src='https://fe.c360dn.com/common/PGBridge.js?r=" + Date.now() + "'><\/script>");</script>
     <script>document.write("<script type='text/javascript' src='https://fe.c360dn.com/common/PGTool.js?r=" + Date.now() + "'><\/script>");</script>
@@ -29,8 +32,6 @@
     <script>document.write("<script type='text/javascript' src='https://fe.c360dn.com/common/PGClip.js?r=" + Date.now() + "'><\/script>");</script>
     <script>document.write("<script type='text/javascript' src='https://fe.c360dn.com/common/fileReader.js?r=" + Date.now() + "'><\/script>");</script>
     <%}%>
-
-    <script src="bundle.js"></script>
   </body>
 </html>
 

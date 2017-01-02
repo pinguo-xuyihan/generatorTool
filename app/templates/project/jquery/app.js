@@ -5,7 +5,7 @@
 var $ = require("jquery");
 
 
-var route = require("./app/common/js/route");
+var route = require("./common/js/route");
 
 route.init();
 route.navigation();

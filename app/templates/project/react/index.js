@@ -1,8 +1,7 @@
-// import React, {Component, render} from 'react';
-var React = require('react');
+ import React, {Component, render} from 'react';
 require('./index.less');
 
-var HelloMessage = React.createClass({
+export default class  HelloMessage extends Component{
 
     render:function() {
         return(
@@ -46,13 +45,5 @@ var HelloMessage = React.createClass({
 				</ul>
             </div>
         );
-    },
-})
-//es6 
-// class HelloMessage extends React.Component {
-//  render() {
-//      return <div>Hello {this.props.name}</div>;
-//  }
-// }
-
-module.exports = HelloMessage;
+    }
+}

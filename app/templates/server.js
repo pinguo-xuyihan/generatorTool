@@ -1,6 +1,13 @@
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
-var config = require('./webpack.config');
+
+var config  = '';
+
+if(process.env.NODE_ENV == 'pro'){
+    config = require('./webpack.pro.config');
+}else{
+    config = require('./webpack.config');
+}
 
 new WebpackDevServer(webpack(config), {
     publicPath: config.output.publicPath,
@@ -10,7 +17,7 @@ new WebpackDevServer(webpack(config), {
     quiet: false,
     // It suppress everything except error, so it has to be set to false as well
     // to see success build.
-    noInfo: true,
+    noInfo: false,
     stats: {
       // Config for minimal console.log mess.
       assets: false,
@@ -21,10 +28,10 @@ new WebpackDevServer(webpack(config), {
       chunks: false,
       chunkModules: false
     }
-}).listen(8080, 'localhost', function (err) {
+}).listen(3000, 'localhost', function (err) {
     if (err) {
         console.log(err);
     }
 
-  console.log('Listening at localhost:8080');
+  console.log('Listening at localhost:3000');
 });

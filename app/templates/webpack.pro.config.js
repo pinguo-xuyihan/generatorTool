@@ -8,20 +8,16 @@ module.exports = {
     entry: [
         'webpack-dev-server/client?http://0.0.0.0:8080',
         'webpack/hot/dev-server',
-        <%if(includeReact){%>
-        'react-hot-loader/patch', 
-        <%}%>
         path.join(__dirname, 'app.js')
     ],
 
 	output: {
 
-		filename : 'bundle.js',
+		filename: '[name]-[hash].min.js',
 		path : path.join(__dirname, 'build') ,
 		sourceMapFilename : 'bundle.map.js',
 		
 	},
-	devtool: "source-map",
 
 	module: {
 
@@ -107,12 +103,19 @@ module.exports = {
     plugins: [
     	new webpack.NoErrorsPlugin(), 
       	new webpack.HotModuleReplacementPlugin(),
-      	<%if(includeReact){%>
+      	<%if(includeReact || includeVue){%>
       	new webpack.DllReferencePlugin({
             context: __dirname,
             manifest: require('./manifest.json'),
         }),
         <%}%>
+
+        new webpack.optimize.UglifyJsPlugin({
+            compressor: {
+                warnings: false,
+                screw_ie8: true
+            }
+        }),
         new HtmlWebpackPlugin({
             template: 'app/index.html',
             inject: 'body',

@@ -1,9 +1,10 @@
-import React from 'react';
+
+import React, {Component, render} from 'react';
 import { Router, Route, IndexRoute } from 'react-router'
 import indexPage from './page/index/index';
 
 
-let Root = React.createClass({
+export default class Root extends Component{
     render() {
         return(
             <Router>
@@ -13,5 +14,3 @@ let Root = React.createClass({
         );
     },
 });
-
-export default Root;

@@ -6,7 +6,7 @@ if (arguments.length === 0) {
 	process.exit();
 }
 
-var components  = arguments[0];
+var page  = arguments[0];
 var appName = '<%= appname %>'.toLocaleLowerCase();
 
 
@@ -14,7 +14,7 @@ var appName = '<%= appname %>'.toLocaleLowerCase();
 // update style template
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>
 var styleTpl = [];
-styleTpl.push('.' + appName + '-components-' + components + '{');
+styleTpl.push('.' + appName + '-page-' + page + '{');
 styleTpl.push('');
 styleTpl.push('}');
 styleTpl = styleTpl.join('\n');
@@ -24,8 +24,8 @@ styleTpl = styleTpl.join('\n');
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>
 var jsTpl = [];
 jsTpl.push("import React, {Component, render} from 'react';");
-jsTpl.push("require('./"+components+".less');");
-jsTpl.push("export default class "+ components+" extends Component {");
+jsTpl.push("require('./"+page+".less');");
+jsTpl.push("export default class "+ page+" extends Component {");
 jsTpl.push("    render () {");
 jsTpl.push("    }");
 jsTpl.push("}");
@@ -55,9 +55,9 @@ function writeFile (filename, content) {
 	});
 }
 
-mkdirSync('app/components/' + components);
+mkdirSync('app/page/' + page);
 
-writeFile ('app/components/'+ components + '/' + components + '.less', styleTpl);
-writeFile ('app/components/'+ components + '/' + components + '.js', jsTpl);
+writeFile ('app/page/'+ page + '/' + page + '.less', styleTpl);
+writeFile ('app/page/'+ page + '/' + page + '.js', jsTpl);
 
 console.log('Create component Success!');

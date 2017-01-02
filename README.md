@@ -42,7 +42,7 @@
      
      
      
-          node createWidget [WidgetName] [es5/es6]
+             node createWidget [WidgetName] [es5/es6]
      
      
   
@@ -76,7 +76,7 @@
  ###脚手架使用
          
          
-     node createComponent [componentName]  [es5/es6]
+           node createComponent [componentName]  [es5/es6]
      
   
  ###性能(开发&&运行)

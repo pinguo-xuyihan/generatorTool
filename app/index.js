@@ -1,9 +1,18 @@
-'use strict';
 var fs       = require('fs');
 var path     = require('path');
 var yeoman   = require('yeoman-generator');
 var wiredep  = require('wiredep');
 var inquirer = require('inquirer');
+
+var arguments = process.argv.splice(2);
+if (arguments.length && arguments.length > 1 && arguments[1] === '-h') {
+  var helpInfo = `
+  Run 'npm run dev' to deploy development env, then visit 127.0.0.1
+  More detail about options, visit https://github.com/pinguo-xuyihan/generatorTool/blob/master/README.md
+`;
+  console.log(helpInfo);
+  process.exit();
+}
 
 var deleteFolderRecursive = function(path) {
 
@@ -76,206 +85,7 @@ if (appExist) {
     },
 
 
-        prompting: function () {
 
-      var done = this.async();
-      var me = this;
-      if (!this.options['skip-welcome-message']) {
-        this.log('==========\'Allo \'allo! Out of the box I include HTML5 Boilerplate, jQuery, and a gulpfile.js to build your app.==========');
-      }
-
-    var prompts = {
-        type: 'checkbox',
-        name: 'features',
-        message: '?',
-        choices: [{
-          name:'是否进行环境升级？',
-          value:'allowUpdate',
-          checked:false
-        },{
-          name:'jQuery',
-          value:'includeJquery',
-          checked:false,
-        },{
-          name:'React',
-          value:'includeReact',
-          checked:false
-        },{
-          name:'Vue',
-          value:'includeVue',
-          checked:false
-        },{
-          name:'常规套件(PGBridge, PGClip, PGServer)',
-          value:'supportKits',
-          checked:false
-        },{
-            name:'exit',
-            value:'exitProcess',
-            checked:false
-        }]
-      };
-
-      inquirer.prompt([ prompts, {
-          when: function (answers) {
-            var features = answers.features;
-            var hasFeature = function (feat) {
-              return features.indexOf(feat) !== -1;
-            };
-            this.includeJquery       = hasFeature('includeJquery');
-
-            return this.includeJquery;
-          },
-          name: 'fontTemplate',
-          message: '选择所需要的前端模板',
-          type: 'checkbox',
-          choices: [
-            {
-                name:'不包含模板',
-                value:'noTemplate',
-                checked:false
-            },
-            {
-                name:'handlebars',
-                value:'includeHandlebars',
-                checked:false
-            }
-          ],
-        },
-        {
-          when: function (answers) {
-            var features = answers.features;
-            var hasFeature = function (feat) {
-              return features.indexOf(feat) !== -1;
-            };
-            this.includeReact  = hasFeature('includeReact');
-
-            return this.includeReact;
-          },
-          name: 'reactDataFlow',
-          message: 'chooise a dataflow architecture of react',
-          type: 'checkbox',
-          choices: [
-            {
-                name:'no need',
-                value:'noDataFlow',
-                checked:false
-            },
-            {
-                name:'reflux',
-                value:'includeReflux',
-                checked:false
-            },
-            { 
-                name:'redux',
-                value:'includeRedux',
-                checked:false
-            }
-          ],
-        },{
-        when: function (answers) {
-            var features = answers.features;
-            var hasFeature = function (feat) {
-              return features.indexOf(feat) !== -1;
-            };
-            this.supportKits  = hasFeature('supportKits');
-
-            return this.supportKits;
-          },
-          name: 'commonKits',
-          message: '选择你所需要的通用套件',
-          type: 'checkbox',
-          choices: [
-            {
-                name:'Native通信(PGBridge,PGtool)',
-                value:'includePgBridge',
-                checked:false
-            },
-            {
-                name:'通用方法(PGCommon)',
-                value:'includeCommonTool',
-                checked:false
-            },
-            {
-                name:'图像处理(PGClip , fileReader)',
-                value:'includeImageHandles',
-                checked:false
-            }
-          ],
-        }], function (answers) {
-        }).then(function(answers){
-            var features = answers.features;
-
-            var hasFeature = function (arr,feat) {
-
-              return arr.indexOf(feat) !== -1;
-            };
-            me.allowUpdate     = hasFeature(features, 'allowUpdate');
-            me.includeVue      = hasFeature(features, 'includeVue');
-            me.includeReact    = hasFeature(features, 'includeReact');
-            me.includeVue      = hasFeature(features, 'includeVue');
-            me.includeJquery   = hasFeature(features, 'includeJquery');
-            me.supportKits     = hasFeature(features, 'supportKits');
-            me.exitProcess     = hasFeature(features, 'exitProcess');
-
-            me.includeReflux  = '';
-            me.includeRedux   = '';
-            me.includeHandlebars = '';
-            me.supportECMA6   = '';
-            me.includePgBridge = '';
-            me.includeCommonTool = '';
-            me.includeImageHandles = '';
-
-            if(me.exitProcess){
-                process.exit();
-            }
-
-            if(me.includeReact){
-                
-                var reactDataFlow   = answers.reactDataFlow;
-
-                me.noDataFlow     = hasFeature(reactDataFlow, 'noDataFlow');
-                me.includeReflux  = hasFeature(reactDataFlow, 'includeReflux');
-                me.includeRedux   = hasFeature(reactDataFlow, 'includeRedux');
-
-            } 
-
-            if(me.includeJquery){
-                
-                var fontTemplate  = answers.fontTemplate;
-
-                me.noTemplate     = hasFeature(fontTemplate, 'noTemplate');
-                me.includeHandlebars  = hasFeature(fontTemplate, 'includeHandlebars');
-
-            }
-
-            if(me.supportKits){
-                var commonKits  = answers.commonKits;
-                me.includePgBridge = hasFeature(commonKits, 'includePgBridge');
-                me.includeCommonTool = hasFeature(commonKits, 'includeCommonTool');
-                me.includeImageHandles = hasFeature(commonKits, 'includeImageHandles');
-            }
-
-
-
-        if (!me.allowUpdate){
-
-          this.log('========== update done ==========');
-          process.exit();
-
-        }else{
-
-          deleteFolderRecursive(process.env.PWD+'/node_modules');
-          if(fs.existsSync(process.env.PWD+"/package.json")) fs.unlinkSync(process.env.PWD+'/package.json');
-          if(fs.existsSync(process.env.PWD+"/.gitignore")) fs.unlinkSync(process.env.PWD+'/.gitignore');
-          if(fs.existsSync(process.env.PWD+"/.gitattributes")) fs.unlinkSync(process.env.PWD+'/.gitattributes');
-          if(fs.existsSync(process.env.PWD+"/.jshintrc")) fs.unlinkSync(process.env.PWD+'/.jshintrc');
-          if(fs.existsSync(process.env.PWD+"/.editorconfig")) fs.unlinkSync(process.env.PWD+'/.editorconfig');
-        }
-
-            done();
-
-        });
-    },
 
     prompting: function () {
 
@@ -302,10 +112,6 @@ if (appExist) {
           value:'includeVue',
           checked:this.includeVue
         },{
-          name:'常规套件(PGBridge, PGClip, PGServer)',
-          value:'supportKits',
-          checked:false
-        },{
           name:'exit',
           value:'exitProcess',
           checked:false
@@ -326,13 +132,20 @@ if (appExist) {
         this.includeVue        = hasFeature('includeVue');
         this.exitProcess       = hasFeature('exitProcess');
 
+        this.includeReflux  = '';
+        this.includeRedux  = '';
+        this.includeHandlebars = '';
+        this.supportECMA6 = '';
+        this.includeJqueryAPI = '';
+
+        this.includePgBridge = '';
+        this.includeCommonTool = '';
+        this.includeImageHandles = '';
+
         if(this.exitProcess){
             process.exit();
         }
         //this.supportKits = hasFeature('supportKits');
-        if (this.includeReactAndReflux || this.supportECMA6) {
-            this.includeBrowserify = true;
-        };
 
         if (!this.allowUpdate){
 
@@ -356,19 +169,20 @@ if (appExist) {
 
       webpackConfig :function(){
           this.template('webpack.config.js');
+          this.template('webpack.pro.config.js')
       },
 
       packageJSON: function() {
           this.template('_package.json', 'package.json');
       },
 
-      jshint: function () {
-        this.copy('jshintrc', '.jshintrc');
+      server: function() {
+          this.template('server.js', 'server.js');
       },
 
-      editorConfig: function () {
-        this.copy('editorconfig', '.editorconfig');
-      }
+      // eshint: function () {
+      //   this.copy('eslintrc', '.eslintrc');
+      // },
     },
 
     install: function () {
@@ -431,10 +245,6 @@ if (appExist) {
         name: 'features',
         message: '?',
         choices: [{
-          name:'jQuery as API',
-          value:'includeJqueryAPI',
-          checked:false,
-        },{
           name:'jQuery',
           value:'includeJquery',
           checked:false,
@@ -447,10 +257,11 @@ if (appExist) {
           value:'includeVue',
           checked:false
         },{
-          name:'常规套件(PGBridge, PGClip, PGServer)',
-          value:'supportKits',
-          checked:false
-        },{
+              name:'常规套件(PGBridge, PGClip, PGServer)',
+              value:'supportKits',
+              checked:false
+        },
+        {
             name:'exit',
             value:'exitProcess',
             checked:false
@@ -493,7 +304,7 @@ if (appExist) {
 
             return this.includeReact;
           },
-          name: 'reactDataFlow',
+          name: 'reactOptions',
           message: 'chooise a dataflow architecture of react',
           type: 'checkbox',
           choices: [
@@ -511,12 +322,41 @@ if (appExist) {
                 name:'redux',
                 value:'includeRedux',
                 checked:false
-            }
+            },
+            {
+              name:'jQuery as API',
+              value:'includeJqueryAPI',
+              checked:false,
+            } 
           ],
-        },{
-        when: function (answers) {
+        },
+
+        {
+          when: function (answers) {
             var features = answers.features;
             var hasFeature = function (feat) {
+              return features.indexOf(feat) !== -1;
+            };
+            this.includeVue  = hasFeature('includeVue');
+
+            return this.includeVue;
+          },
+          name: 'vueOptions',
+          message: 'chooise a dataflow architecture of react',
+          type: 'checkbox',
+          choices: [
+            {
+              name:'jQuery as API',
+              value:'includeJqueryAPI',
+              checked:false,
+            }
+          ],
+        },
+
+        {
+      when: function (answers) {
+          var features = answers.features;
+          var hasFeature = function (feat) {
               return features.indexOf(feat) !== -1;
             };
             this.supportKits  = hasFeature('supportKits');
@@ -551,16 +391,19 @@ if (appExist) {
 
               return arr.indexOf(feat) !== -1;
             };
+
+            
             me.includeReact    = hasFeature(features, 'includeReact');
             me.includeVue      = hasFeature(features, 'includeVue');
             me.includeJquery   = hasFeature(features, 'includeJquery');
-            me.supportKits     = hasFeature(features, 'supportKits');
+
             me.exitProcess     = hasFeature(features, 'exitProcess');
 
             me.includeReflux  = '';
             me.includeRedux  = '';
             me.includeHandlebars = '';
             me.supportECMA6 = '';
+            me.includeJqueryAPI = '';
 
             me.includePgBridge = '';
             me.includeCommonTool = '';
@@ -572,11 +415,12 @@ if (appExist) {
 
             if(me.includeReact){
                 
-                var reactDataFlow   = answers.reactDataFlow;
+                var reactOptions   = answers.reactOptions;
 
-                me.noDataFlow     = hasFeature(reactDataFlow, 'noDataFlow');
-                me.includeReflux  = hasFeature(reactDataFlow, 'includeReflux');
-                me.includeRedux   = hasFeature(reactDataFlow, 'includeRedux');
+                me.noDataFlow     = hasFeature(reactOptions, 'noDataFlow');
+                me.includeReflux  = hasFeature(reactOptions, 'includeReflux');
+                me.includeRedux   = hasFeature(reactOptions, 'includeRedux');
+                me.includeJqueryAPI   = hasFeature(reactOptions, 'includeJqueryAPI');
 
             } 
 
@@ -589,11 +433,21 @@ if (appExist) {
 
             }
 
+            if(me.includeVue){
+
+                var vueOptions   = answers.vueOptions;
+                me.supportKits     = hasFeature(vueOptions, 'supportKits');
+            }
+
             if(me.supportKits){
                 var commonKits  = answers.commonKits;
                 me.includePgBridge = hasFeature(commonKits, 'includePgBridge');
                 me.includeCommonTool = hasFeature(commonKits, 'includeCommonTool');
                 me.includeImageHandles = hasFeature(commonKits, 'includeImageHandles');
+            }
+
+            if(this.includeJquery || this.includeVue){
+                this.supportECMA6 = true;
             }
 
             done();
@@ -605,14 +459,26 @@ if (appExist) {
 
       webpackConfig :function(){
           this.template('webpack.config.js');
+          this.template('webpack.pro.config.js')
       },
 
       packageJSON: function() {
           this.template('_package.json', 'package.json');
       },
 
+      server: function() {
+        if(this.includeReact || this.includeVue){
+            this.template('server.js', 'server.js');
+        }
+          
+      },
+
+      // eshint: function () {
+      //   this.copy('eslintrc', '.eslintrc');
+      // },
+
       writeJquery:function(){
-        console.log('writeJquery');
+
           if(this.includeJquery){
 
               var rootPath = 'project/jquery/';
@@ -630,10 +496,9 @@ if (appExist) {
               this.template( rootPath + 'index.js'    , 'app/page/index/index.js');
               this.copy( rootPath + 'route.js'    , 'app/common/js/route.js');
 
-              this.template( 'project/index.html', 'index.html');
-              this.copy(rootPath + 'app.js', 'app.js');
+              this.template( 'project/index.html', 'app/index.html');
+              this.copy(rootPath + 'app.js', 'app/app.js');
           }
-
 
       },
 
@@ -643,8 +508,8 @@ if (appExist) {
 
               var rootPath = 'project/react/';
               this.template( rootPath + 'createComponent.js', 'createComponent.js');
-              this.template( 'project/index.html', 'index.html');
-              this.template( rootPath + 'app.js', 'app.js');
+              this.template( 'project/index.html', 'app/index.html');
+              this.template( rootPath + 'app.js', 'app/app.js');
               this.copy( rootPath + 'root.js', 'app/root.js');
               this.copy(rootPath + 'dll.config.js','dll.config.js');
               this.copy(rootPath + 'server.js','server.js');
@@ -658,10 +523,12 @@ if (appExist) {
           if(this.includeVue){
 
               var rootPath = 'project/vue/';
-              this.template( 'project/index.html', 'index.html');
-              this.template( rootPath + 'app.js', 'app.js');
+              this.template( 'project/index.html', 'app/index.html');
+              this.template( rootPath + 'createComponent.js', 'createComponent.js');
+              this.template( rootPath + 'app.js', 'app/app.js');
               this.copy( rootPath +'index.vue' , 'app/page/index.vue');
               this.copy( rootPath +'main.vue' , 'app/page/main.vue');
+              this.copy(rootPath + 'dll.config.js','dll.config.js');
 
           }
       
@@ -718,6 +585,10 @@ if (appExist) {
                 this.mkdir('app/stores');
             }
 
+            if (this.includeRedux) {
+              this.mkdir('app/reducers');
+            }
+
         }
 
       }
@@ -727,7 +598,7 @@ if (appExist) {
       
       var howToInstall =
         '\nAfter running ' +
-        'npm install & bower install' +
+        'npm install ' +
         ', inject your' +
         '\nfront end dependencies by running ' +
         'gulp wiredep.';
