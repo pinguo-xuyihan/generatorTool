@@ -23,10 +23,6 @@
  - 自选前端模板（目前只推荐handlebars，支持不包含模板方案）
  - 脚手架，用于创建页面(包含路由)，组件(widget)
  - es6（默认支持，建议使用）
- -	reflux  or redux 
- -	jquery  as  API
- -	通用套件 
-
 
  ###目录规范
  - common/js  : 存放共有js文件，如PGTool.js
@@ -54,6 +50,9 @@
   - react-router 
   - es6 
   - 组件脚手架
+  - reflux  or redux 
+  - jquery  as  API
+  - 通用套件 
   
  ###目录规范
   - common/js  : 存放共有js文件，如PGTool.js
