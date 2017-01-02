@@ -38,11 +38,11 @@
  ###脚手架使用
          
          
-     node createPage [pageName] [relativePath] [es5/es6]
+          node createPage [pageName] [relativePath] [es5/es6]
      
      
      
-     node createWidget [WidgetName] [es5/es6]
+          node createWidget [WidgetName] [es5/es6]
      
      
   
