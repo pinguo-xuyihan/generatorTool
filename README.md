@@ -11,11 +11,13 @@
     
     npm run pro 
     
-
-
+    
 ####访问项目
 
 默认路由都是localhost:8080/#index 
+
+####调试 
+在源代码中可以直接debugger，断点会停在源代码中，而不是编译之后的bundle文件中，这个是依赖webpack中sourceMap；
 
 ##JQuery
 
@@ -35,9 +37,14 @@
  
  ###脚手架使用
          
+         
      node createPage [pageName] [relativePath] [es5/es6]
      
+     
+     
      node createWidget [WidgetName] [es5/es6]
+     
+     
   
  ###性能(开发&&运行)
  1. 通过获取cdn上jquery，在打包编译时不会编译jquery这部分，提高编译速度
@@ -68,7 +75,9 @@
   
  ###脚手架使用
          
+         
      node createComponent [componentName]  [es5/es6]
+     
   
  ###性能(开发&&运行)
  
@@ -98,16 +107,17 @@
   
   
    ###脚手架使用
+   
          
        node createComponent [componentName]  [es5/es6]
+       
   
  ###性能(开发&&运行)
  
 1. vue,vue-route,react-resource形成了单独的lib库，每次编译的时候不会重新编译这些内容，缩短了编译时间
 2. 每个route对应的page会单独打成一个包，按请求页面加载所需资源(按需加载)
 
-####调试 
-在源代码中可以直接debugger，断点会停在源代码中，而不是编译之后的bundle文件中，这个是依赖webpack中sourceMap；
+
 
 
   
