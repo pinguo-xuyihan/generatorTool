@@ -32,7 +32,7 @@
  - page : 存放页面内容，html,css，js在一个文件夹下,样式文件使用less添加css的命名空间，避免样式污染，
  - resource/css : 存放公共css（非页面使用级别）
  - resource/font : 公共字体资源
- - resource/font : 公共图片资源
+ - resource/images : 公共图片资源
  - widget : 其他组件，可以被Page调用，如menu组件
  
  ###脚手架使用
@@ -67,7 +67,7 @@
   - page : 存放页面内容，html,css，js在一个文件夹下,样式文件使用less添加css的命名空间，避免样式污染，
   - resource/css : 存放公共css（非页面使用级别）
   - resource/font : 公共字体资源
-  - resource/font : 公共图片资源
+  - resource/images : 公共图片资源
   - components : 组件，可以被Page调用，如menu组件
   - actions : 存放公共数据流action
   - stores  : 存放公共store
@@ -102,7 +102,7 @@
   - page : 存放vue文件，以页面为单位，
   - resource/css : 存放公共css（非页面使用级别）
   - resource/font : 公共字体资源
-  - resource/font : 公共图片资源
+  - resource/images : 公共图片资源
   - components : 组件，可以被Page调用，如menu组件
   
   
